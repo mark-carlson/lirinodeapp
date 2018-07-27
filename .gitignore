@@ -1,3 +1,5 @@
 node_modules/
 .DS_Store
 .env
+
+# for future reference, a gitignore file should not have a na,e or else it wont work. simply call your gitignore file ".gitignore"
