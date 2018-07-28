@@ -46,15 +46,19 @@ inquire
 
                         spotify.search({
                             type: 'track',
-                            query: "The Sign",
-                            limit: 5
+                            query: "The Sign, Ace of Base",
+                            limit: 1
                         }, function (err, data) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
                             var songs = data.tracks.items
-    
+
                             var getArtistNames = function (artist) {
                                 return artist.name;
                             };
-    
+
                             for (var i = 0; i < songs.length; i++) {
                                 console.log(i);
                                 console.log("artist(s): " + songs[i].artists.map(getArtistNames));
@@ -64,32 +68,35 @@ inquire
                                 console.log("-----------------------------------");
                             }
 
-                    })
-                } else {
-                    spotify.search({
-                        type: 'track',
-                        query: userInput.song,
-                        limit: 5
-                    }, function (err, data) {
-                        var songs = data.tracks.items
+                        })
+                    } else {
+                        spotify.search({
+                            type: 'track',
+                            query: userInput.song,
+                            limit: 5
+                        }, function (err, data) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
+                            var songs = data.tracks.items
 
-                        var getArtistNames = function (artist) {
-                            return artist.name;
-                        };
+                            var getArtistNames = function (artist) {
+                                return artist.name;
+                            };
 
-                        for (var i = 0; i < songs.length; i++) {
-                            console.log(i);
-                            console.log("artist(s): " + songs[i].artists.map(getArtistNames));
-                            console.log("song name: " + songs[i].name);
-                            console.log("preview song: " + songs[i].preview_url);
-                            console.log("album: " + songs[i].album.name);
-                            console.log("-----------------------------------");
-                        }
+                            for (var i = 0; i < songs.length; i++) {
+                                console.log(i);
+                                console.log("artist(s): " + songs[i].artists.map(getArtistNames));
+                                console.log("song name: " + songs[i].name);
+                                console.log("preview song: " + songs[i].preview_url);
+                                console.log("album: " + songs[i].album.name);
+                                console.log("-----------------------------------");
+                            }
 
-                        // console.log(JSON.stringify(data.tracks.items[0], null, 2));
-                    });
-                })
-                
+                        });
+                    }
+                }) // this is where im getting the error
         } else if (userInput.command === "Movie this") {
             inquire
                 .prompt([{
@@ -119,8 +126,6 @@ inquire
                         });
                     }
 
-
-
                     var urlHit = "http://www.omdbapi.com/?t=" + userInput.movie + "&y=&plot=full&tomatoes=true&apikey=trilogy";
 
                     request(urlHit, function (error, response, body) {
@@ -146,14 +151,38 @@ inquire
                 });
 
         } else if (userInput.command === "Do what it says") {
-            fs.readFile("./random.txt", function read(err, data) {
+            fs.readFile("./random.txt", "utf8", function read(err, data) {
+
                 if (err) {
                     throw err;
                 }
-                content = data;
 
-                console.log(content);
-                processFile();
+                spotify.search({
+                    type: 'track',
+                    query: data,
+                    limit: 1
+                }, function (err, data) {
+
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    var songs = data.tracks.items
+
+                    var getArtistNames = function (artist) {
+                        return artist.name;
+                    };
+
+                    for (var i = 0; i < songs.length; i++) {
+                        console.log("artist(s): " + songs[i].artists.map(getArtistNames));
+                        console.log("song name: " + songs[i].name);
+                        console.log("preview song: " + songs[i].preview_url);
+                        console.log("album: " + songs[i].album.name);
+                        console.log("-----------------------------------");
+                    }
+
+                })
+
             });
         }
     })
