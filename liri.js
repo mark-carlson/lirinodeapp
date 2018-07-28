@@ -96,7 +96,7 @@ inquire
 
                         });
                     }
-                }) // this is where im getting the error
+                })
         } else if (userInput.command === "Movie this") {
             inquire
                 .prompt([{
